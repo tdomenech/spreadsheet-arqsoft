@@ -1,5 +1,5 @@
 package edu.upc.etsetb.arqsoft.entities;
 
-public interface Operator {
-    
+public interface Operator extends Component {
+
 }
