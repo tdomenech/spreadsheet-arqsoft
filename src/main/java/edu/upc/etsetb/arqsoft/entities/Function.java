@@ -1,5 +1,8 @@
 package edu.upc.etsetb.arqsoft.entities;
+import java.util.ArrayList;
 
-public class Function {
+public abstract class Function {
+    public ArrayList<Argument> args;
+    abstract float processFunction(ArrayList<Argument> args);
     
 }
