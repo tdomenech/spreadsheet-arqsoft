@@ -5,13 +5,13 @@ import java.util.ArrayList;
 public class Promedio extends Function {
     @Override
     float processFunction(ArrayList<Argument> args) {
-        float prom = 0;
+        float avg = 0;
         float sum = 0;
         for (Argument arg : args) {
             sum = sum + arg.getValue();
         }
-        prom = sum/args.size();
-        return prom;
+        avg = sum/args.size();
+        return avg;
     }
     public float getValue() {
         return this.processFunction(args);

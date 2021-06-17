@@ -4,37 +4,41 @@ import java.net.ContentHandler;
 import java.util.regex.Pattern;
 
 public class SpreadsheetControler {
-    Spreadsheet spreadSheet; 
-    Loader loader;
-    Saver saver;
-    CellManager cellManager;
+    protected Spreadsheet spreadSheet; 
+    protected Loader loader;
+    protected Saver saver;
+    private CellManager cellManager;
+    private UserInterface ui;
 
-    SpreadsheetControler(){
+    SpreadsheetControler(UserInterface ui){
         this.loader = new Loader();
         this.saver = new Saver();
         this.cellManager = new CellManager();
+        this.ui = ui;
     }
 
-    void createSpreadsheet(int id, int numRows, int numCols){
-        spreadSheet = new Spreadsheet(id, numRows, numCols);
-        System.out.println("Created Spreadsheet with id "+ id +" " + numRows +" rows " + numCols + " columns");
+    void createSpreadsheet(int id){
+        spreadSheet = new Spreadsheet(id);
+        this.ui.println("Created Spreadsheet with id "+ id);
     }
 
     void showSpreadsheet(){
         // TODO
     }
 
-    public void setCellContent(String cellCoord, String content)  throws ContentException, BadCoordinateException{
-        if(content.contains("=")){
+    public void setCellContent(String cellCoord, String strContent)  throws ContentException, BadCoordinateException{
+        Content content = null;
+        //gestionar coordinate 
+        if(strContent.startsWith("=")){
             //PROCESSAR FORMULA
-        }else if(isNumeric(content)){
+        }else if(isNumeric(strContent)){
             //Cell cell = cellManager.createCell(content);
             //spreadSheet.cells.entrySet(<cellCoord, cell);
 
         }else{
 
         }
-        
+        this.spreadSheet.setCellContent(cellCoord, content);
     }
 
     public boolean isNumeric(String string){

@@ -3,17 +3,27 @@ package edu.upc.etsetb.arqsoft.entities;
 import java.util.HashMap;
 
 public class Spreadsheet {
-    int spreadId; 
-    HashMap<String, Cell> cells; 
-    int numRows;
-    int numCols;
+    private int spreadId; 
+    protected HashMap<String, Cell> cells; 
+    private int numRows;
+    private int numCols;
 
-    Spreadsheet(int id, int rows, int cols){
+    Spreadsheet(int id){
         this.spreadId = id;
-        this.numCols = cols;
-        this.numRows = rows;
         cells = new HashMap<String,Cell>();
     }
 
-    Spreadsheet(){}
+    Spreadsheet(){
+        cells = new HashMap<String,Cell>();
+    }
+
+    public void setCellContent(String cellCoord, Content content)  throws ContentException{
+        Cell cell = cells.get(cellCoord);
+        if(cell == null){
+            //creariamos la celda
+            //put de la celda en el mapa
+            //actualizar numrows y numcols
+        }
+        //cell.setContent(content); //implementar setContent
+    }
 }
