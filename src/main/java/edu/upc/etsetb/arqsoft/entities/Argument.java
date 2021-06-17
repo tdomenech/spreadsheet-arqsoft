@@ -1,5 +1,7 @@
 package edu.upc.etsetb.arqsoft.entities;
+import java.util.ArrayList;
 
-public class Argument {
-    
+public interface Argument {
+    //public ArrayList<Function> functions;
+    float getValue();
 }
