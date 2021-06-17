@@ -18,6 +18,24 @@ public class SpreadsheetControler {
     }
 
     void showSpreadsheet(){
+        // TODO
+    }
+
+    public void setCellContent(String cellCoord, String content)  throws ContentException, BadCoordinateException{
+        //TODO
+    }
+
+    public double getCellContentAsDouble(String coord) throws BadCoordinateException, NoNumberException{
+        double content = 0;
+        //TODO
+        return content;
+
+    }
+
+    public String getCellContentAsString(String cooord) throws BadCoordinateException{
+        String content = "hello";
+        //TODO
+        return content;
 
     }
 }

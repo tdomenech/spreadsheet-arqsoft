@@ -14,4 +14,6 @@ public class Spreadsheet {
         this.numRows = rows;
         cells = new HashMap<String,Cell>();
     }
+
+    Spreadsheet(){}
 }
