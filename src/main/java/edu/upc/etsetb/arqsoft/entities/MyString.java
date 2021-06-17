@@ -7,11 +7,11 @@ public class MyString extends Value {
         this.text = string;
     }
 
-    public double getAsDouble(){
+    public double getAsDouble() throws NoNumberException{
         if(text.equals("0")){
             return 0;
         }else{
-            return 12;
+            throw new NoNumberException("This cell is storing text, please choose another one");
             }
     }
 

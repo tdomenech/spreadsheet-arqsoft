@@ -1,4 +1,5 @@
 package edu.upc.etsetb.arqsoft.entities;
+import java.nio.channels.NonReadableChannelException;
 import java.util.*; 
 
 public class Cell {
@@ -12,14 +13,12 @@ public class Cell {
         HashSet<Cell> siDependentOf = new HashSet(); 
     }
     
-    public Content getAsDouble(){
-        return content;
-        // TODO
+    public double getAsDouble() throws NoNumberException{ 
+        return content.value.getAsDouble();
     }
     
-    public Content getAsString(){
-        return content;
-        // TODO
+    public String getAsString(){
+        return content.value.getAsString();
     }
 
 }
