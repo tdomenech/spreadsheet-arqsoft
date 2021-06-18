@@ -1,5 +1,7 @@
 package edu.upc.etsetb.arqsoft.entities;
 
+import java.io.IOException;
+
 public class UserInterface {
     SpreadsheetControler controler;
 
@@ -31,7 +33,11 @@ public class UserInterface {
                 controler.showSpreadsheet();
 
             }else if(split[0].equalsIgnoreCase("S")){
-                controler.saver.saveSpreadsheet(split[1], controler.spreadSheet);
+                try {
+                    controler.saver.saveSpreadsheet(split[1], controler.spreadSheet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 controler.showSpreadsheet();
                 System.out.println("Spreadsheet saved succsesfully");
             }else if(split[0].equalsIgnoreCase("F")){

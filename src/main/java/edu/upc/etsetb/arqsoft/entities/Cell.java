@@ -2,7 +2,7 @@ package edu.upc.etsetb.arqsoft.entities;
 import java.nio.channels.NonReadableChannelException;
 import java.util.*; 
 
-public class Cell {
+public class Cell implements Operand, Argument{
     private CellName cellName;
     private Content content;
 
@@ -14,11 +14,11 @@ public class Cell {
     }
     
     public double getAsDouble() throws NoNumberException{ 
-        return content.value.getAsDouble();
+        return content.getAsDouble();
     }
     
     public String getAsString(){
-        return content.value.getAsString();
+        return content.getAsString();
     }
 
 }
