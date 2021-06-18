@@ -36,6 +36,7 @@ public class SpreadsheetControler {
         if(strContent.startsWith("=")){
             //PROCESSAR FORMULA
             strContent = strContent.substring(1);//witout =
+            tokenizer.addsTokenizer(tokenizer);
             tokenizer.tokenize(strContent);
             LinkedList<Token> tokens = tokenizer.getTokens();
             ArrayList<Token> postfix = new ArrayList<>();
