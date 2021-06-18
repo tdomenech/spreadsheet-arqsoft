@@ -52,8 +52,8 @@ public class Tokenizer {
     }
 
     //main method --> has to be adapted
-    public static void main(String[] args) {
-
+    //funcio create tokenizer 
+    public Tokenizer createTokenizer(){
         Tokenizer tokenizer = new Tokenizer();
         tokenizer.add("SUM|MIN|MAX|AVG", 1); // function
         tokenizer.add("\\(", 2); // open bracket
@@ -66,15 +66,6 @@ public class Tokenizer {
         tokenizer.add("[a-zA-Z]+\\\\d+", 9); //cell
         tokenizer.add("[a-zA-Z]+\\\\d+:[a-zA-Z]+\\\\d+", 10); //range
 
-        try {
-            tokenizer.tokenize(" sin(x) * (1 + var_12) ");
-
-           // for (Tokenizer.Token tok : tokenizer.getTokens()) {
-           //     System.out.println("" + tok.token + " " + tok.sequence);
-           // }
-        }
-        catch (ParserException e) {
-            System.out.println(e.getMessage());
-        }
+        return tokenizer; 
     }
 }

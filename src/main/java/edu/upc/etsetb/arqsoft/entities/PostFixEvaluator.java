@@ -3,7 +3,7 @@ import java.util.Stack;
 
 public class PostFixEvaluator {
 
-    static int evaluatePostfix(String exp) {
+    static double evaluatePostfix(String exp) {
         //create a stack
         Stack<Integer> stack = new Stack<>();
 
@@ -36,7 +36,7 @@ public class PostFixEvaluator {
                         stack.push(val2 * val1);
                         break;
                 }
-            }
+            }// TODO  evaluate functions
         }
         return stack.pop();
     }
