@@ -3,5 +3,5 @@ import java.util.ArrayList;
 
 public interface Argument {
     //public ArrayList<Function> functions;
-    float getValue();
+    //float getValue();
 }

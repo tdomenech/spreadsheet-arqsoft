@@ -1,14 +1,16 @@
 package edu.upc.etsetb.arqsoft.entities;
 
 public class Loader {
-    String path; 
+    private String path;
+    private SpreadsheetControler controler; 
 
-    Loader(){
+    Loader(SpreadsheetControler controler){
+        this.controler = controler;
     }
 
     public Spreadsheet loadSpreadsheet(String path){
         Spreadsheet spred = new Spreadsheet();
-        //TO DO
         return spred;
+
     }
 }
