@@ -12,11 +12,8 @@ public class App
 {
     public static void main( String[] args )
     {
-        //UserInterface interface1 = new UserInterface(); 
-        //interface1.startSession();
-        int[] coord = new int[]{29,2};
-        String s = SpreadsheetControler.FromCoordToCell(coord);
-        System.out.println(s);
+        UserInterface interface1 = new UserInterface(); 
+        interface1.startSession();
 
     }
 }

@@ -15,6 +15,8 @@ public class Spreadsheet {
     Spreadsheet(int id){
         this.spreadId = id;
         cells = new HashMap<String,Cell>();
+        numCols = 0;
+        numRows = 0;
     }
 
     Spreadsheet(){
@@ -32,13 +34,18 @@ public class Spreadsheet {
     public void setCellContent(String cellCoord, Content content)  throws ContentException{
         Cell cell = cells.get(cellCoord);
         if(cell == null){
-            //creariamos la celda
-            //put de la celda en el mapa
+            cell = new Cell(content, cellCoord); //creariamos la celda
+            cells.put(cellCoord, cell); //put de la celda en el mapa
             //actualizar numrows y numcols
-            this.numCols += 1;
-            this.numRows += 1;
+            int[] coords = SpreadsheetControler.FromCellToCoord(cellCoord);
+            if(coords[0] > this.numCols){
+                this.numCols = coords[0];
+            }
+            if(coords[1] > this.numRows){
+                this.numRows = coords[1];
+            }
         }
-        //cell.setContent(content); //implementar setContent
+        cell.setCellContent(content); //implementar setContent
     }
 
     public void addDependancies(String cellName, HashSet<String> cellNames){

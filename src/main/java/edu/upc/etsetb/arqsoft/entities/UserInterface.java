@@ -13,7 +13,7 @@ public class UserInterface {
         System.out.println("Welcome to this session, what action do you want to do?");
         boolean end = false;
         while(!end){
-            System.out.println("Select one option: \n\t - Press 'C' for creating a blank Spreadsheet \n\t - Press 'E' to edit a Cell \n\t - Press 'L' to Load Spreadsheet from file \n\t - Press 'S' to save Spreadsheet to file");
+            System.out.println("Select one option: \n\t - Press 'C' for creating a blank Spreadsheet \n\t - Press 'E' to edit a Cell \n\t - Press 'L' to Load Spreadsheet from file \n\t - Press 'S' to save Spreadsheet to file \n\t - Press 'F' to finish session");
             String action = System.console().readLine();
             String[] split = action.split(" "); 
             if(split[0].equalsIgnoreCase("C")){

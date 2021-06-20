@@ -3,6 +3,11 @@ package edu.upc.etsetb.arqsoft.entities;
 import java.net.ContentHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import edu.upc.etsetb.arqsoft.entities.impl.FormulaFactory;
+import edu.upc.etsetb.arqsoft.entities.impl.NumericalFactory;
+import edu.upc.etsetb.arqsoft.entities.impl.TextFactory;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -12,12 +17,18 @@ public class SpreadsheetControler {
     protected Saver saver;
     private UserInterface ui;
     private Tokenizer tokenizer;
+    private NumericalFactory numericalFact;
+    private TextFactory textFactory;
+    private FormulaFactory formulaFactory;
 
     SpreadsheetControler(UserInterface ui){
         this.loader = new Loader(this);
         this.saver = new Saver(this);
         this.ui = ui;
         this.tokenizer = new Tokenizer();
+        this.numericalFact = new NumericalFactory();
+        this.textFactory = new TextFactory();
+        this.formulaFactory = new FormulaFactory();
     }
 
     public void createSpreadsheet(int id){
@@ -32,7 +43,7 @@ public class SpreadsheetControler {
     public void setCellContent(String cellCoord, String strContent)  throws ContentException, BadCoordinateException{
         Content content = null;
         //gestionar coordinate 
-
+        cellCoord = cellCoord.toUpperCase();
         if(strContent.startsWith("=")){
             //PROCESSAR FORMULA
             strContent = strContent.substring(1);//witout =
@@ -46,15 +57,29 @@ public class SpreadsheetControler {
             }
             String strPostfix = "";
             for (Token token : postfix) {
-                //System.out.println("" + token.token + " " + token.sequence);
+                System.out.println("" + token.token + " " + token.sequence);
                 strPostfix += token.sequence;
             }
             double res = PostFixEvaluator.evaluatePostfix(strPostfix);
             //pasar el double a content
+            content = formulaFactory.createContent();
+            Value value = new MyNumber(res);
+            content.setContent(value);
+            ui.println(spreadSheet.cells.get(cellCoord).getAsString());
 
         }else if(isNumeric(strContent)){
             //Cell cell = cellManager.createCell(content);
-            //spreadSheet.cells.entrySet(<cellCoord, cell);
+            content = numericalFact.createContent();
+            Value value = new MyNumber(Double.parseDouble(strContent));
+            content.setContent(value);
+            spreadSheet.setCellContent(cellCoord, content);
+        }else{
+            content = textFactory.createContent();
+            Value value = new MyString(strContent);
+            content.setContent(value);
+            spreadSheet.setCellContent(cellCoord, content);
+        }
+    }
 
     public boolean isCellCoord(String string){
         Pattern pattern = Pattern.compile("([A-Z]+)([0-9]+)");
@@ -92,12 +117,13 @@ public class SpreadsheetControler {
 
     }
 
-    public static int[] FromCellToCoord(String CellCoord){
+    public static int[] FromCellToCoord(String cellCoord){
         int[] coord = new int[2];
+        cellCoord.toUpperCase();
         Pattern letterPattern = Pattern.compile("[A-Z]+");
         Pattern numberPattern = Pattern.compile("[0-9]+");
-        Matcher lm = letterPattern.matcher(CellCoord);
-        Matcher nm = numberPattern.matcher(CellCoord);
+        Matcher lm = letterPattern.matcher(cellCoord);
+        Matcher nm = numberPattern.matcher(cellCoord);
         if(lm.find()){
             String letters = lm.group();
             int total= 1;
@@ -114,15 +140,13 @@ public class SpreadsheetControler {
     }
 
     public static String FromCoordToCell(int[] coord){
-        final StringBuilder sb = new StringBuilder();
-
-        int num = coord[0] - 1;
-        while (num >=  0) {
-            int numChar = (num % 26)  + 65;
-            sb.append((char)numChar);
-            num = (num  / 26) - 1;
+        String letters = new String();
+        int column = coord[0];
+        while (column-- > 0) {
+            letters += (char)('A' + (column % 26));
+            column /= 26;
         }
-        
-        return sb.reverse().toString();
+        int row = coord[1];
+        return letters.concat(Integer.toString(row));
     }
 }

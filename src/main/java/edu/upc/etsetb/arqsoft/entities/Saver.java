@@ -17,24 +17,26 @@ public class Saver {
         int maxRows = spreadsheet.getNumRows();
         HashMap<String, Cell> cells = spreadsheet.getCells();
         FileWriter fw = new FileWriter(path);
-        for(int i=0; i < maxRows ;  i++){
+        for(int i=1; i < maxRows+1 ;  i++){
             String line = new String();
-            for(int j=0; j < maxCols; j++){
-                int[] coord = new int[]{i,j};
+            for(int j=1; j < maxCols+1; j++){
+                int[] coord = new int[]{j,i};
                 String cellcandidate = SpreadsheetControler.FromCoordToCell(coord);
+                System.out.println(coord[0] + " " + coord[1] + " " + cellcandidate);
                 Cell cell = cells.get(cellcandidate);
                 if(cell != null){
                     String cellstr = cell.getAsString();
                     line += cellstr;
-                    if(i != maxCols-1){
+                    if(j != maxCols){
                         line += ";";
                     }
                 } else{
-                    if(i != maxCols-1){
+                    if(j != maxCols){
                         line += ";";
                     }
                 }
             }
+            line += "\n";
             fw.write(line);
         }
         fw.close();

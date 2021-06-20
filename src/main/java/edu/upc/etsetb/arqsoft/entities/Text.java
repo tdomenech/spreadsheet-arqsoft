@@ -11,7 +11,7 @@ public class Text extends Content{
         return this.text;
     }
 
-    public void setNumerical(MyString string){
+    public void setText(MyString string){
         this.text = string;
     }
 }

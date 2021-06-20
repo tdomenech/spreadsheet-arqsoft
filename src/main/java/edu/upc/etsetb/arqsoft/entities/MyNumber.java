@@ -1,6 +1,6 @@
 package edu.upc.etsetb.arqsoft.entities;
 
-public class MyNumber {
+public class MyNumber extends Value {
     double numerical;
 
     MyNumber(double number){
