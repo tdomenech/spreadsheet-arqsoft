@@ -9,7 +9,7 @@ public class UserInterface {
         this.controler = new SpreadsheetControler(this);
     }
 
-    public void startSession(){
+    public void startSession() throws IOException, ContentException, BadCoordinateException{
         System.out.println("Welcome to this session, what action do you want to do?");
         boolean end = false;
         while(!end){

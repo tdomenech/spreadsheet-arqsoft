@@ -1,5 +1,9 @@
 package edu.upc.etsetb.arqsoft;
 
+import java.io.IOException;
+
+import edu.upc.etsetb.arqsoft.entities.BadCoordinateException;
+import edu.upc.etsetb.arqsoft.entities.ContentException;
 import edu.upc.etsetb.arqsoft.entities.Spreadsheet;
 import edu.upc.etsetb.arqsoft.entities.SpreadsheetControler;
 import edu.upc.etsetb.arqsoft.entities.UserInterface;
@@ -10,7 +14,7 @@ import edu.upc.etsetb.arqsoft.entities.UserInterface;
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws IOException, ContentException, BadCoordinateException
     {
         UserInterface interface1 = new UserInterface(); 
         interface1.startSession();

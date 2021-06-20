@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import edu.upc.etsetb.arqsoft.entities.impl.NumericalFactory;
 
 public class Spreadsheet {
     private int spreadId; 

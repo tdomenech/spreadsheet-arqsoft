@@ -37,18 +37,40 @@ public class SpreadsheetControler {
     }
 
     public void showSpreadsheet(){
-        // TODO
+        for(int i=1; i < spreadSheet.getNumRows()+1 ;  i++){
+            String line = new String();
+            for(int j=1; j <spreadSheet.getNumCols()+1; j++){
+                int[] coord = new int[]{j,i};
+                String cellcandidate = SpreadsheetControler.FromCoordToCell(coord);
+                Cell cell = spreadSheet.getCells().get(cellcandidate);
+                line += cellcandidate +"->";
+                if(cell != null){
+                    String cellstr = cell.getAsString();
+                    line += cellstr;
+                    if(j != spreadSheet.getNumCols()){
+                        line += "   ;";
+                    }
+                } else{
+                    if(j != spreadSheet.getNumCols()){
+                        line += "   ;";
+                    }
+                }
+            }
+            line += "\n";
+            ui.println(line);
+        }
     }
 
     public void setCellContent(String cellCoord, String strContent)  throws ContentException, BadCoordinateException{
         Content content = null;
+        Value value = null;
         //gestionar coordinate 
         cellCoord = cellCoord.toUpperCase();
         if(strContent.startsWith("=")){
             //PROCESSAR FORMULA
-            strContent = strContent.substring(1);//witout =
+            String strContent2 = strContent.substring(1);//witout =
             tokenizer.addsTokenizer(tokenizer);
-            tokenizer.tokenize(strContent);
+            tokenizer.tokenize(strContent2);
             LinkedList<Token> tokens = tokenizer.getTokens();
             ArrayList<Token> postfix = new ArrayList<>();
             try {
@@ -62,22 +84,23 @@ public class SpreadsheetControler {
             }
             double res = PostFixEvaluator.evaluatePostfix(strPostfix);
             //pasar el double a content
-            content = formulaFactory.createContent();
-            Value value = new MyNumber(res);
-            content.setContent(value);
-            ui.println(spreadSheet.cells.get(cellCoord).getAsString());
+            Formula formula = new Formula();
+            formula.setResult(new MyNumber(res));
+            content = formula;
+            value = new MyString(strContent);
 
         }else if(isNumeric(strContent)){
             //Cell cell = cellManager.createCell(content);
             content = numericalFact.createContent();
-            Value value = new MyNumber(Double.parseDouble(strContent));
-            content.setContent(value);
-            spreadSheet.setCellContent(cellCoord, content);
+            value = new MyNumber(Double.parseDouble(strContent));
         }else{
             content = textFactory.createContent();
-            Value value = new MyString(strContent);
+            value = new MyString(strContent);
+        }
+        if(content != null && value != null){
             content.setContent(value);
             spreadSheet.setCellContent(cellCoord, content);
+            content.setContent(value);
         }
     }
 
