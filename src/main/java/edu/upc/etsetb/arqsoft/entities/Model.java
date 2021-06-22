@@ -1,5 +1,4 @@
 package edu.upc.etsetb.arqsoft.entities;
 
-public interface Model {
-    
+public class Model {
 }

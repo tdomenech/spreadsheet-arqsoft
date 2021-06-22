@@ -1,6 +1,6 @@
 package edu.upc.etsetb.arqsoft.entities;
 
-public class BadCoordinateException extends Throwable {
+public class BadCoordinateException extends RuntimeException  {
 
     String msg;
 

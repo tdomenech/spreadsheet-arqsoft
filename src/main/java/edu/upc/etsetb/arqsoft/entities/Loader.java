@@ -7,23 +7,23 @@ import java.io.IOException;
 
 public class Loader {
     private String path;
-    private SpreadsheetControler controler; 
+    private SpreadsheetController controler; 
 
-    Loader(SpreadsheetControler controler){
+    Loader(SpreadsheetController controler){
         this.controler = controler;
     }
 
     public Spreadsheet loadSpreadsheet(String path) throws IOException, ContentException, BadCoordinateException{
         Spreadsheet spred = new Spreadsheet();
         BufferedReader reader = new BufferedReader(new FileReader(path));
-        String line = reader.readLine();
+        String line;
         int numRow = 0;
-        while(line != null){
+        while((line = reader.readLine()) != null){
             numRow += 1;
             String[] cells = line.split(";");
             for(int i=0; i<cells.length; i++){
-                String cellCoord = SpreadsheetControler.FromCoordToCell(new int[]{i,numRow});
-                controler.setCellContent(cellCoord, cells[i]);
+                String cellCoord = SpreadsheetController.FromCoordToCell(new int[]{i,numRow});
+                controler.editSpreadsheet(cellCoord, cells[i]);
             }
         }
         return spred;

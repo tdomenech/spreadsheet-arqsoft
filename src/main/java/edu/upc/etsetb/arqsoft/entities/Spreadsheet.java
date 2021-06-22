@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 
-public class Spreadsheet {
+public class Spreadsheet extends Model {
     private int spreadId; 
     protected HashMap<String, Cell> cells; 
     private int numRows;
@@ -36,7 +36,7 @@ public class Spreadsheet {
             cell = new Cell(content, cellCoord); //creariamos la celda
             cells.put(cellCoord, cell); //put de la celda en el mapa
             //actualizar numrows y numcols
-            int[] coords = SpreadsheetControler.FromCellToCoord(cellCoord);
+            int[] coords = SpreadsheetController.FromCellToCoord(cellCoord);
             if(coords[0] > this.numCols){
                 this.numCols = coords[0];
             }
@@ -47,25 +47,26 @@ public class Spreadsheet {
         cell.setCellContent(content); //implementar setContent
     }
 
-    public void addDependancies(String cellName, HashSet<String> cellNames){
+    public void addDependancies(String cellName, HashSet<Cell> dependencies){
+        Cell cell = cells.get(cellName);
+        HashSet<Cell> depends = cell.getIDependOn();
+        for(Cell aux : dependencies){
+            if(!depends.contains(aux)){
+                depends.add(aux);
+            }
+        }   
+    }
+
+    public void removeDependency(String cellName, HashSet<String> cellNames){
         //TODO
     }
 
-    public void removeDependency(String cellName){
-        //TODO
-    }
-
-    public void UpdateDependancies(String cellName){
-        //TODO
+    public void UpdateDependancies(){
+       
     }
 
     public HashMap<String, Cell> getCells(){
         return this.cells;
     }
     
-    public ArrayList<String> getDependancies(String cellName){
-        ArrayList<String> dependancies = new ArrayList<String>();
-        //TODO
-        return dependancies;
-    }
 }

@@ -6,9 +6,9 @@ import java.util.HashMap;
 
 public class Saver {
     String path; 
-    private SpreadsheetControler controler;
+    private SpreadsheetController controler;
 
-    Saver(SpreadsheetControler controler){
+    Saver(SpreadsheetController controler){
         this.controler = controler;
     }
 
@@ -21,7 +21,7 @@ public class Saver {
             String line = new String();
             for(int j=1; j < maxCols+1; j++){
                 int[] coord = new int[]{j,i};
-                String cellcandidate = SpreadsheetControler.FromCoordToCell(coord);
+                String cellcandidate = SpreadsheetController.FromCoordToCell(coord);
                 System.out.println(coord[0] + " " + coord[1] + " " + cellcandidate);
                 Cell cell = cells.get(cellcandidate);
                 if(cell != null){

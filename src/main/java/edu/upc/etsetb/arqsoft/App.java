@@ -5,7 +5,7 @@ import java.io.IOException;
 import edu.upc.etsetb.arqsoft.entities.BadCoordinateException;
 import edu.upc.etsetb.arqsoft.entities.ContentException;
 import edu.upc.etsetb.arqsoft.entities.Spreadsheet;
-import edu.upc.etsetb.arqsoft.entities.SpreadsheetControler;
+import edu.upc.etsetb.arqsoft.entities.SpreadsheetController;
 import edu.upc.etsetb.arqsoft.entities.UserInterface;
 
 /**

@@ -54,7 +54,7 @@ public class Tokenizer {
     //main method --> has to be adapted
     //funcio create tokenizer 
     public void addsTokenizer(Tokenizer tokenizer){
-        tokenizer.add("SUM|MIN|MAX|AVG", 1); // function
+        tokenizer.add("SUMA|MIN|MAX|PROMEDIO", 1); // function
         tokenizer.add("\\(", 2); // open bracket
         tokenizer.add("\\)", 3); // close bracket
         tokenizer.add("[+-]", 4); // plus or minus
@@ -64,6 +64,7 @@ public class Tokenizer {
         tokenizer.add("[a-zA-Z][a-zA-Z0-9_]*", 8); // variable
         tokenizer.add("[a-zA-Z]+\\\\d+", 9); //cell
         tokenizer.add("[a-zA-Z]+\\\\d+:[a-zA-Z]+\\\\d+", 10); //range
+
 
     }
 }
