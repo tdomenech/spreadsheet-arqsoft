@@ -1,6 +1,6 @@
 package edu.upc.etsetb.arqsoft.entities;
 
-public class NoNumberException extends Throwable {
+public class NoNumberException extends RuntimeException {
     String msg;
 
     NoNumberException(){

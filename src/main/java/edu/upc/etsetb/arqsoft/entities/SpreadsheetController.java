@@ -11,8 +11,9 @@ import edu.upc.etsetb.arqsoft.entities.impl.TextFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.ResourceBundle.Control;
 
-public class SpreadsheetControler {
+public class SpreadsheetController {
     protected Spreadsheet spreadSheet; 
     protected Loader loader;
     protected Saver saver;
@@ -23,7 +24,7 @@ public class SpreadsheetControler {
     private FormulaFactory formulaFactory;
     private static final Pattern COORDINATE_PATTERN = Pattern.compile("^([a-zA-Z]+)(\\d+)$");
 
-    SpreadsheetControler(UserInterface ui){
+    SpreadsheetController(UserInterface ui){
         this.loader = new Loader(this);
         this.saver = new Saver(this);
         this.ui = ui;
@@ -43,7 +44,7 @@ public class SpreadsheetControler {
             String line = new String();
             for(int j=1; j <spreadSheet.getNumCols()+1; j++){
                 int[] coord = new int[]{j,i};
-                String cellcandidate = SpreadsheetControler.FromCoordToCell(coord);
+                String cellcandidate = SpreadsheetController.FromCoordToCell(coord);
                 Cell cell = spreadSheet.getCells().get(cellcandidate);
                 line += cellcandidate +"->";
                 if(cell != null){
@@ -106,6 +107,49 @@ public class SpreadsheetControler {
             content.setContent(value);
         }
     }
+    
+    public void editSpreadsheet(String cellCoord, String strContent) {
+        Content content = null;
+        Value value = null;
+        //gestionar coordinate 
+        cellCoord = cellCoord.toUpperCase();
+        if(strContent.startsWith("=")){
+            //PROCESSAR FORMULA
+            String strContent2 = strContent.substring(1);//witout =
+            tokenizer.addsTokenizer(tokenizer);
+            tokenizer.tokenize(strContent2);
+            LinkedList<Token> tokens = tokenizer.getTokens();
+            ArrayList<Token> postfix = new ArrayList<>();
+            try {
+                postfix = (ArrayList<Token>) PostFixGenerator.infixToPostfix(tokens);
+            } catch (InvalidFormulaException ex) {
+            }
+            String strPostfix = "";
+            for (Token token : postfix) {
+                //System.out.println("" + token.token + " " + token.sequence);
+                strPostfix += token.sequence;
+            }
+            double res = PostFixEvaluator.evaluatePostfix(strPostfix);
+            //pasar el double a content
+            Formula formula = new Formula();
+            formula.setResult(new MyNumber(res));
+            content = formula;
+            value = new MyString(strContent);
+
+        }else if(isNumeric(strContent)){
+            content = numericalFact.createContent();
+            value = new MyNumber(Double.parseDouble(strContent));
+        }else{
+            content = textFactory.createContent();
+            value = new MyString(strContent);
+        }
+        if(content != null && value != null){
+            content.setContent(value);
+            this.spreadSheet.setCellContent(cellCoord, content);
+            content.setContent(value);
+        }
+    }
+
 
     public boolean isCellCoord(String string){
         Pattern pattern = Pattern.compile("([A-Z]+)([0-9]+)");

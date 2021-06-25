@@ -5,12 +5,16 @@ import java.io.IOException;
 import edu.upc.etsetb.arqsoft.entities.Tokenizer.ParserException;
 
 public class UserInterface {
-    SpreadsheetControler controler;
+    private SpreadsheetController controller;
 
     public UserInterface(){
-        this.controler = new SpreadsheetControler(this);
+        this.controller = new SpreadsheetController(this);
     }
 
+
+    public SpreadsheetController getSpreadsheetController(){
+        return controller;
+    }
     public void startSession() throws IOException, ContentException, BadCoordinateException, ParserException{
         System.out.println("Welcome to this session, what action do you want to do?");
         boolean end = false;
@@ -20,27 +24,27 @@ public class UserInterface {
             String[] split = action.split(" "); 
             if(split[0].equalsIgnoreCase("C")){
                 int id = Integer.parseInt(split[1]);
-                controler.createSpreadsheet(id);
+                controller.createSpreadsheet(id);
    
             }else if(split[0].equalsIgnoreCase("E")){
                 try {
-                    controler.setCellContent(split[1], split[2]);
+                    controller.editSpreadsheet(split[1], split[2]);
                 } catch (BadCoordinateException | ContentException e) {
                     System.out.println(e);
                 }
-                controler.showSpreadsheet();
+                controller.showSpreadsheet();
               
             }else if(split[0].equalsIgnoreCase("L")){
-                controler.spreadSheet = controler.loader.loadSpreadsheet(split[1]);
-                controler.showSpreadsheet();
+                controller.spreadSheet = controller.loader.loadSpreadsheet(split[1]);
+                controller.showSpreadsheet();
 
             }else if(split[0].equalsIgnoreCase("S")){
                 try {
-                    controler.saver.saveSpreadsheet(split[1], controler.spreadSheet);
+                    controller.saver.saveSpreadsheet(split[1], controller.spreadSheet);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                controler.showSpreadsheet();
+                controller.showSpreadsheet();
                 System.out.println("Spreadsheet saved succsesfully");
             }else if(split[0].equalsIgnoreCase("F")){
                 end = true;

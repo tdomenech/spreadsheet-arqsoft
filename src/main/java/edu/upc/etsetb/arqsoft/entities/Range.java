@@ -18,20 +18,20 @@ public class Range {
         initCoord = m.group(1);
         finalCoord = m.group(2);
 
-        if (SpreadsheetControler.getRow(initCoord) > SpreadsheetControler.getRow(finalCoord) || SpreadsheetControler.getColumnAsInt(initCoord) > SpreadsheetControler.getColumnAsInt(finalCoord)) {
+        if (SpreadsheetController.getRow(initCoord) > SpreadsheetController.getRow(finalCoord) || SpreadsheetController.getColumnAsInt(initCoord) > SpreadsheetController.getColumnAsInt(finalCoord)) {
             throw new IllegalArgumentException("Invalid range argument");
         }
-        this.range.add(SpreadsheetControler.FromCellToCoord(initCoord));
+        this.range.add(SpreadsheetController.FromCellToCoord(initCoord));
 
-        for (int r = SpreadsheetControler.getRow(initCoord); r <= SpreadsheetControler.getRow(finalCoord); r++) {
-            for (int c = SpreadsheetControler.getColumnAsInt(initCoord); c <= SpreadsheetControler.getColumnAsInt(finalCoord); c++) {
+        for (int r = SpreadsheetController.getRow(initCoord); r <= SpreadsheetController.getRow(finalCoord); r++) {
+            for (int c = SpreadsheetController.getColumnAsInt(initCoord); c <= SpreadsheetController.getColumnAsInt(finalCoord); c++) {
                 int[] coord = new int[2];
                 coord[0] = c;
                 coord[1] = r;
                 this.range.add(coord);
             }
         }
-        this.range.add(SpreadsheetControler.FromCellToCoord(finalCoord));
+        this.range.add(SpreadsheetController.FromCellToCoord(finalCoord));
 
     }
 

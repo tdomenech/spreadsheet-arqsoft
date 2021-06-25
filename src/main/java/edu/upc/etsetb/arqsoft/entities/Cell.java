@@ -6,13 +6,32 @@ import java.util.*;
 public class Cell implements Operand, Argument {
     private String cellName;
     private Content content;
+    private HashSet<Cell> iDependOn;
+    private HashSet<Cell> dependOnMe;
 
     public Cell(Content content, String cellName) {
         this.content = content;
         this.cellName = cellName;
-        HashSet<Cell> dependsOn = new HashSet();
-        HashSet<Cell> siDependentOf = new HashSet();
+        this.iDependOn = new HashSet<Cell>();
+        this.dependOnMe = new HashSet<Cell>();
     }
+
+    public HashSet<Cell> getIDependOn(){
+        return iDependOn;
+    }
+
+    public HashSet<Cell> getDependOnMe(){
+        return dependOnMe;
+    }
+
+    public void setIDependOn(HashSet<Cell> cells){
+        this.iDependOn = cells;
+    }
+
+    public void setDependOnMe(HashSet<Cell> cells){
+        this.dependOnMe = cells;
+    }
+
 
     public void setCellName(String name) {
         this.cellName = name;
