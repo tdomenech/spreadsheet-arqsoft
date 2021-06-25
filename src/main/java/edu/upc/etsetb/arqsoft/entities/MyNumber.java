@@ -1,6 +1,6 @@
 package edu.upc.etsetb.arqsoft.entities;
 
-public class MyNumber extends Value implements Operand {
+public class MyNumber extends Value implements Operand, Argument {
     double numerical;
 
     public MyNumber(Double number){

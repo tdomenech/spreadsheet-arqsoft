@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Tokenizer",
+            "request": "launch",
+            "mainClass": "edu.upc.etsetb.arqsoft.entities.Tokenizer",
+            "projectName": "spreadsheet"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

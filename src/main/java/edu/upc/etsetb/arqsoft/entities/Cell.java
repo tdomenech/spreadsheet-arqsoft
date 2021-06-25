@@ -8,14 +8,23 @@ public class Cell implements Operand, Argument {
     private Content content;
     private HashSet<Cell> iDependOn;
     private HashSet<Cell> dependOnMe;
+    private boolean fromRange;
 
     public Cell(Content content, String cellName) {
         this.content = content;
         this.cellName = cellName;
         this.iDependOn = new HashSet<Cell>();
         this.dependOnMe = new HashSet<Cell>();
+        this.fromRange = false;
     }
 
+    public boolean getFromRange(){
+        return fromRange;
+    }
+
+    public void setFromRange(boolean range){
+        this.fromRange = range;
+    }
 
     public double getNumerical(){
         return getAsDouble();
