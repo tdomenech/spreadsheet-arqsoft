@@ -21,6 +21,9 @@ public class Cell implements Operand, Argument {
     public void setCellContent(Content content) {
         this.content = content;
     }
+    public Content getCellContent() {
+        return this.content;
+    }
 
     public String getCellName() {
         return this.cellName;
@@ -33,5 +36,4 @@ public class Cell implements Operand, Argument {
     public String getAsString() {
         return content.getAsString();
     }
-
 }
