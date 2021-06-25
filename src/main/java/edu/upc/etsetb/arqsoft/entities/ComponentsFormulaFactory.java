@@ -11,16 +11,16 @@ public class ComponentsFormulaFactory {
         for (Token token : tokens) {
             ComponentFormula component = null;
             switch (token.type) {
-                case COORDINATE:
-                    Coordinate coord = new Coordinate(token.sequence);
-                    component = Coordinate.coord2String(coord);
+                case CELL:
+                    Cell cell = spreadsheet.getCells().get(token.sequence);
+                    component = (ComponentFormula) cell;
                     //component = SpreadsheetControler.getCellContentAsString(coord);
                     break;
                 case NUMBER:
                     component = new MyNumber(Double.parseDouble(token.sequence));
                     break;
                 case RANGE:
-                    components.addAll(new Range(token.sequence).getCells());
+                    //components.addAll(new Range(token.sequence).getCells());
                     break;
                 case OPERATOR:
                     component = OperatorFactory.getInstance(token.sequence);

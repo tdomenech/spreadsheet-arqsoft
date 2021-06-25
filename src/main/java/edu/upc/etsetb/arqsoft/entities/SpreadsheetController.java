@@ -108,7 +108,7 @@ public class SpreadsheetController {
         }
     }
     
-    public void editSpreadsheet(String cellCoord, String strContent) {
+    public void editSpreadsheet(String cellCoord, String strContent) throws ParserException {
         Content content = null;
         Value value = null;
         //gestionar coordinate 
@@ -124,17 +124,18 @@ public class SpreadsheetController {
                 postfix = (ArrayList<Token>) PostFixGenerator.infixToPostfix(tokens);
             } catch (InvalidFormulaException ex) {
             }
+            ArrayList<ComponentFormula> components = (ArrayList<ComponentFormula>) ComponentsFormulaFactory.generateFormulaComponentList(postfix, this.spreadSheet);
             String strPostfix = "";
             for (Token token : postfix) {
                 //System.out.println("" + token.token + " " + token.sequence);
                 strPostfix += token.sequence;
             }
-            double res = PostFixEvaluator.evaluatePostfix(strPostfix);
+            double res = FormulaEvaluator.getResult(components, spreadSheet);
             //pasar el double a content
             Formula formula = new Formula();
             formula.setResult(new MyNumber(res));
             content = formula;
-            value = new MyString(strContent);
+            value = new MyNumber(res);
 
         }else if(isNumeric(strContent)){
             content = numericalFact.createContent();
@@ -198,23 +199,7 @@ public class SpreadsheetController {
         return content;
 
     }
-
-    public static int getRow(String coord){
-        char r = coord.charAt(1);
-        int row = r;
-        return row;
-    }
-
-    public static int getColumnAsInt(String coord){
-        char c = coord.charAt(0);
-        //letter to number
-        //TODO
-
-
-        int col = c;
-        return col;
-    }
-
+    
     public static int[] FromCellToCoord(String cellCoord){
         int[] coord = new int[2];
         cellCoord.toUpperCase();

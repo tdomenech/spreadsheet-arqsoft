@@ -1,10 +1,14 @@
 package edu.upc.etsetb.arqsoft.entities;
 
-public class MyNumber extends Value {
+public class MyNumber extends Value implements Operand {
     double numerical;
 
-    MyNumber(Double number){
+    public MyNumber(Double number){
         this.numerical = number;
+    }
+
+    public double getNumerical(){
+        return this.getAsDouble();
     }
 
     public double getAsDouble(){

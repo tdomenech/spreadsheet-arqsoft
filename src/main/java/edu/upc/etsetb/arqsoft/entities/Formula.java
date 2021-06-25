@@ -8,7 +8,7 @@ public class Formula extends Content{
 
     public Formula(){
         this.components = new LinkedList<Component>();
-        this.result = new MyNumber(0);
+        this.result = new MyNumber(0.0);
     }
 
     public MyNumber getResult(){

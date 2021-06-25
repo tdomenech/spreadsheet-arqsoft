@@ -12,7 +12,7 @@ public class FormulaEvaluator {
         Operand secondOperand = null;
 
         for (ComponentFormula component : components) {
-            if (component instanceof Numerical) {
+            if (component instanceof MyNumber) {
                 stack.push(component);
             } else if (component instanceof Cell) {
                 Cell cell = (Cell) component;
@@ -23,7 +23,7 @@ public class FormulaEvaluator {
                     } else if (content instanceof Formula) {
                         //TODO: Mirar error si té?
                         Formula formula = (Formula) content;
-                        Numerical number = new Numerical(formula.getResult());
+                        MyNumber number = formula.getResult();
                         stack.push((ComponentFormula) number);
                     } else {
                         throw new ContentException("Formula evaluator has found an invalid component");
@@ -40,7 +40,7 @@ public class FormulaEvaluator {
                     stack.push(operator.compute(firstOperand, secondOperand));
                 }
             } else if (component instanceof Function) {
-             //TODO
+            
             }
         }
 

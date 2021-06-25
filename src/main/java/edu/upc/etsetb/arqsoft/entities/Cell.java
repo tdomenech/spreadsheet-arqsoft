@@ -16,6 +16,11 @@ public class Cell implements Operand, Argument {
         this.dependOnMe = new HashSet<Cell>();
     }
 
+
+    public double getNumerical(){
+        return getAsDouble();
+    }
+
     public HashSet<Cell> getIDependOn(){
         return iDependOn;
     }

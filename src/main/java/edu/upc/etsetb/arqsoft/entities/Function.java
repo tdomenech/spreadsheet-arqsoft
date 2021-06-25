@@ -1,5 +1,8 @@
 package edu.upc.etsetb.arqsoft.entities;
 import java.util.List;
+
+import javax.annotation.processing.ProcessingEnvironment;
+
 import java.util.HashMap;
 
 public abstract class Function implements Operand, Argument {
@@ -16,7 +19,10 @@ public abstract class Function implements Operand, Argument {
         return this.processFunction(args);
     }
 
-    
+    public double getNumerical(){
+        return processFunction(args);
+    }
+        
     public static final HashMap<String,Class> functionClassMap = new HashMap<>();
     static {
         functionClassMap.put(FunctionEnum.SUM.toString(), Sum.class);

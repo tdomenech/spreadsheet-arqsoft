@@ -94,22 +94,33 @@ public final class Tokenizer {
             }
         }
         return stack.pop();
+    }
 
     //main method --> has to be adapted
     //funcio create tokenizer 
     
     public void addsTokenizer(Tokenizer tokenizer){
+        /*
         tokenizer.add("SUMA|MIN|MAX|PROMEDIO", 1); // function
         tokenizer.add("\\(", 2); // open bracket
         tokenizer.add("\\)", 3); // close bracket
         tokenizer.add("[+-]", 4); // plus or minus
-        tokenizer.add("[*/]", 5); // mult or divide
+        tokenizer.add("[*//*]", 5); // mult or divide
         tokenizer.add("\\^", 6); // raised
         tokenizer.add("[0-9]+", 7); // integer number
         tokenizer.add("[a-zA-Z][a-zA-Z0-9_]*", 8); // variable
         tokenizer.add("[a-zA-Z]+\\\\d+", 9); //cell
-        tokenizer.add("[a-zA-Z]+\\\\d+:[a-zA-Z]+\\\\d+", 10); //range
-
+        tokenizer.add("[a-zA-Z]+\\\\d+:[a-zA-Z]+\\\\d+", 10); //range */
+        tokenizer.add("SUM|MIN|MAX|AVG", TokenEnum.FUNCTION); // function
+        tokenizer.add("\\(", TokenEnum.LEFT_BRACKET); // open bracket
+        tokenizer.add("\\)", TokenEnum.RIGHT_BRACKET); // close bracket
+        tokenizer.add("[+-]", TokenEnum.OPERATOR); // plus or minus
+        tokenizer.add("[*/]", TokenEnum.OPERATOR); // mult or divide
+        tokenizer.add("\\^", TokenEnum.OPERATOR); // raised
+        tokenizer.add("[0-9]+", TokenEnum.NUMBER); // integer number
+        tokenizer.add("[a-zA-Z]+\\d+", TokenEnum.CELL); //cell
+        tokenizer.add("[a-zA-Z]+\\d+:[a-zA-Z]+\\d+", TokenEnum.RANGE); //Cell Range
+        tokenizer.add(",", TokenEnum.COMMA); //Argument separator
     }
     
 
@@ -129,9 +140,9 @@ public final class Tokenizer {
         tokenizer.add("[*/]", TokenEnum.OPERATOR); // mult or divide
         tokenizer.add("\\^", TokenEnum.OPERATOR); // raised
         tokenizer.add("[0-9]+", TokenEnum.NUMBER); // integer number
-        tokenizer.add("[a-zA-Z]+\\d+", TokenEnum.COORDINATE); //cell
+        tokenizer.add("[a-zA-Z]+\\d+", TokenEnum.CELL); //cell
         tokenizer.add("[a-zA-Z]+\\d+:[a-zA-Z]+\\d+", TokenEnum.RANGE); //Cell Range
-        tokenizer.add(",", TokenEnum.COMMA); //Argument separator
+        tokenizer.add(";", TokenEnum.COMMA); //Argument separator
         
 //            
         Pattern pattern = Pattern.compile("^([a-zA-Z]+)(\\d+)$"); 
