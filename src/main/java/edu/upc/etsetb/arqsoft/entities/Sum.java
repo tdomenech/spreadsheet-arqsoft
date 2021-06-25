@@ -1,17 +1,13 @@
 package edu.upc.etsetb.arqsoft.entities;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Sum extends Function {
     @Override
-    float processFunction(ArrayList<Argument> args) {
-        float sum = 0;
+    double processFunction(List<Argument> args) {
+        double sum = 0;
         for (Argument arg : args) {
-            sum = sum + arg.getValue();
+            sum = sum + arg.getNumerical();
         }
         return sum;
-    }
-    public float getValue() {
-        return this.processFunction(args);
-    }
-    
+    } 
 }

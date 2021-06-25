@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import edu.upc.etsetb.arqsoft.entities.Tokenizer.ParserException;
+
 public class Loader {
     private String path;
     private SpreadsheetControler controler; 
@@ -13,7 +15,7 @@ public class Loader {
         this.controler = controler;
     }
 
-    public Spreadsheet loadSpreadsheet(String path) throws IOException, ContentException, BadCoordinateException{
+    public Spreadsheet loadSpreadsheet(String path) throws IOException, ContentException, BadCoordinateException, ParserException{
         Spreadsheet spred = new Spreadsheet();
         BufferedReader reader = new BufferedReader(new FileReader(path));
         String line = reader.readLine();

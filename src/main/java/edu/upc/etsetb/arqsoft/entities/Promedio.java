@@ -1,19 +1,15 @@
 package edu.upc.etsetb.arqsoft.entities;
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class Promedio extends Function {
-    @Override
-    float processFunction(ArrayList<Argument> args) {
-        float avg = 0;
-        float sum = 0;
+    double processFunction(List<Argument> args) {
+        double avg = 0;
+        double sum = 0;
         for (Argument arg : args) {
-            sum = sum + arg.getValue();
+            sum = sum + arg.getNumerical();
         }
         avg = sum/args.size();
         return avg;
-    }
-    public float getValue() {
-        return this.processFunction(args);
     }
 }

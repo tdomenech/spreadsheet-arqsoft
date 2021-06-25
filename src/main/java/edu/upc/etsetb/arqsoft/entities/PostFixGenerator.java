@@ -72,6 +72,8 @@ public class PostFixGenerator {
                 stack.push(token);
             }
         }
+        //if the token is a letter extract letter an following nummber and extract value from that cell
+        //threat it as a operand
 
         // pop all the remaining operators from
         // the stack and append them to output

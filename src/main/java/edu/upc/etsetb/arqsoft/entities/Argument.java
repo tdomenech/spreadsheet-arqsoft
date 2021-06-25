@@ -1,7 +1,6 @@
 package edu.upc.etsetb.arqsoft.entities;
-import java.util.ArrayList;
 
-public interface Argument {
+public interface Argument extends ComponentFormula {
     //public ArrayList<Function> functions;
-    //float getValue();
+    public double getNumerical();
 }

@@ -7,6 +7,7 @@ import edu.upc.etsetb.arqsoft.entities.ContentException;
 import edu.upc.etsetb.arqsoft.entities.Spreadsheet;
 import edu.upc.etsetb.arqsoft.entities.SpreadsheetControler;
 import edu.upc.etsetb.arqsoft.entities.UserInterface;
+import edu.upc.etsetb.arqsoft.entities.Tokenizer.ParserException;
 
 /**
  * Hello world!
@@ -14,10 +15,11 @@ import edu.upc.etsetb.arqsoft.entities.UserInterface;
  */
 public class App 
 {
-    public static void main( String[] args ) throws IOException, ContentException, BadCoordinateException
+    public static void main( String[] args ) throws IOException, ContentException, BadCoordinateException, ParserException
     {
         UserInterface interface1 = new UserInterface(); 
         interface1.startSession();
-
+        //SpreadsheetControler contr = new SpreadsheetControler();
+        //contr.setCellContent("A1", "=2-1");
     }
 }

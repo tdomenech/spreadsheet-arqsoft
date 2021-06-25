@@ -2,6 +2,8 @@ package edu.upc.etsetb.arqsoft.entities;
 
 import java.io.IOException;
 
+import edu.upc.etsetb.arqsoft.entities.Tokenizer.ParserException;
+
 public class UserInterface {
     SpreadsheetControler controler;
 
@@ -9,7 +11,7 @@ public class UserInterface {
         this.controler = new SpreadsheetControler(this);
     }
 
-    public void startSession() throws IOException, ContentException, BadCoordinateException{
+    public void startSession() throws IOException, ContentException, BadCoordinateException, ParserException{
         System.out.println("Welcome to this session, what action do you want to do?");
         boolean end = false;
         while(!end){

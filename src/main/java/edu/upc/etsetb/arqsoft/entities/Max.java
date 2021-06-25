@@ -1,20 +1,15 @@
 package edu.upc.etsetb.arqsoft.entities;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Max extends Function {
     @Override
-    float processFunction(ArrayList<Argument> args) {
-        float max = 0;
+    double processFunction(List<Argument> args) {
+        double max = 0;
         for (Argument arg : args) {
-            if (max < arg.getValue()) {
-                max = arg.getValue();
+            if (max < arg.getNumerical()) {
+                max = arg.getNumerical();
             }
         }
         return max;
     }
-    
-    public float getValue() {
-        return this.processFunction(args);
-    }
-    
 }

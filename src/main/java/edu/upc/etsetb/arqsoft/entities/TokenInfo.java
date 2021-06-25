@@ -5,12 +5,12 @@ import java.util.regex.Pattern;
 public class TokenInfo {
 
     public final Pattern regex;
-    public final int token;
+    public final TokenEnum type;
 
-    public TokenInfo(Pattern regex, int token) {
+    public TokenInfo(Pattern regex, TokenEnum type) {
         super();
         this.regex = regex;
-        this.token = token;
+        this.type = type;
     }
 
 }

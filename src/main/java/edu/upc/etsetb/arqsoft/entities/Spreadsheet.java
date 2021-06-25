@@ -11,6 +11,7 @@ public class Spreadsheet {
     private int numRows;
     private int numCols;
 
+
     Spreadsheet(int id){
         this.spreadId = id;
         cells = new HashMap<String,Cell>();
@@ -62,7 +63,7 @@ public class Spreadsheet {
     public HashMap<String, Cell> getCells(){
         return this.cells;
     }
-    
+        
     public ArrayList<String> getDependancies(String cellName){
         ArrayList<String> dependancies = new ArrayList<String>();
         //TODO

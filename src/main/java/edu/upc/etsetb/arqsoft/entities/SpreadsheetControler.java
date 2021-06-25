@@ -4,6 +4,7 @@ import java.net.ContentHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.upc.etsetb.arqsoft.entities.Tokenizer.ParserException;
 import edu.upc.etsetb.arqsoft.entities.impl.FormulaFactory;
 import edu.upc.etsetb.arqsoft.entities.impl.NumericalFactory;
 import edu.upc.etsetb.arqsoft.entities.impl.TextFactory;
@@ -20,6 +21,7 @@ public class SpreadsheetControler {
     private NumericalFactory numericalFact;
     private TextFactory textFactory;
     private FormulaFactory formulaFactory;
+    private static final Pattern COORDINATE_PATTERN = Pattern.compile("^([a-zA-Z]+)(\\d+)$");
 
     SpreadsheetControler(UserInterface ui){
         this.loader = new Loader(this);
@@ -61,7 +63,7 @@ public class SpreadsheetControler {
         }
     }
 
-    public void setCellContent(String cellCoord, String strContent)  throws ContentException, BadCoordinateException{
+    public void setCellContent(String cellCoord, String strContent)  throws ContentException, BadCoordinateException, ParserException{
         Content content = null;
         Value value = null;
         //gestionar coordinate 
@@ -69,7 +71,7 @@ public class SpreadsheetControler {
         if(strContent.startsWith("=")){
             //PROCESSAR FORMULA
             String strContent2 = strContent.substring(1);//witout =
-            tokenizer.addsTokenizer(tokenizer);
+            //tokenizer.addsTokenizer(tokenizer);
             tokenizer.tokenize(strContent2);
             LinkedList<Token> tokens = tokenizer.getTokens();
             ArrayList<Token> postfix = new ArrayList<>();
@@ -79,11 +81,12 @@ public class SpreadsheetControler {
             }
             String strPostfix = "";
             for (Token token : postfix) {
-                System.out.println("" + token.token + " " + token.sequence);
+                //System.out.println("" + token.token + " " + token.sequence);
                 strPostfix += token.sequence;
             }
             double res = PostFixEvaluator.evaluatePostfix(strPostfix);
             //pasar el double a content
+            System.out.println(res + " res");
             Formula formula = new Formula();
             formula.setResult(new MyNumber(res));
             content = formula;
@@ -121,10 +124,18 @@ public class SpreadsheetControler {
             return pattern.matcher(string).matches();
         }
     }
+
+    private Matcher getMatcher(String coord) {
+        return COORDINATE_PATTERN.matcher(coord);
+    }
     
     public double getCellContentAsDouble(String coord) throws BadCoordinateException, NoNumberException{
         double content;
         //check badcoordinate
+        Matcher m = getMatcher(coord);
+        if (!m.matches()) {
+            throw new BadCoordinateException("Non valid coordinate");
+        }
         Cell cell = spreadSheet.cells.get(coord);
         content = cell.getAsDouble();
         return content;
@@ -134,10 +145,30 @@ public class SpreadsheetControler {
     public String getCellContentAsString(String coord) throws BadCoordinateException{
         String content;
         //check badcoordinate
+        Matcher m = getMatcher(coord);
+        if (!m.matches()) {
+            throw new BadCoordinateException("Non valid coordinate");
+        }
         Cell cell = spreadSheet.cells.get(coord);
         content = cell.getAsString();
         return content;
 
+    }
+
+    public static int getRow(String coord){
+        char r = coord.charAt(1);
+        int row = r;
+        return row;
+    }
+
+    public static int getColumnAsInt(String coord){
+        char c = coord.charAt(0);
+        //letter to number
+        //TODO
+
+
+        int col = c;
+        return col;
     }
 
     public static int[] FromCellToCoord(String cellCoord){
