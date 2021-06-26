@@ -1,13 +1,15 @@
 package edu.upc.etsetb.arqsoft.entities;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public class Formula extends Content{
-    private LinkedList<Component> components; 
+    private List<ComponentFormula> formulaComponentList;
     private MyNumber result;
+    private String text;
 
-    public Formula(){
-        this.components = new LinkedList<Component>();
+    public Formula(String text, List<ComponentFormula> formulaComponentList, Double result){
+        this.text = text;
+        this.formulaComponentList = formulaComponentList;
         this.result = new MyNumber(0.0);
     }
 
@@ -19,12 +21,8 @@ public class Formula extends Content{
         this.result = number;
     }
 
-    public void setComponents(LinkedList<Component> components){
-        this.components = components;
-    }
-
-    public LinkedList<Component> getComponents(){
-        return this.components;
+    public List<ComponentFormula> getFormulaComponents() {
+        return this.formulaComponentList;
     }
 
 }

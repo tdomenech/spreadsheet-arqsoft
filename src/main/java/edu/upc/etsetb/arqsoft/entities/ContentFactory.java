@@ -4,3 +4,4 @@ public interface ContentFactory {
     
     public Content createContent();
 }
+ 

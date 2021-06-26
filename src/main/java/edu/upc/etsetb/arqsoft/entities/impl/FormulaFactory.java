@@ -8,6 +8,6 @@ public class FormulaFactory implements ContentFactory {
     
     @Override
     public Content createContent(){
-        return new Formula();
+        return new Formula(null, null, null);
     }
 }

@@ -10,7 +10,12 @@ import edu.upc.etsetb.arqsoft.entities.impl.NumericalFactory;
 import edu.upc.etsetb.arqsoft.entities.impl.TextFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.ResourceBundle.Control;
 
@@ -23,8 +28,10 @@ public class SpreadsheetController {
     private NumericalFactory numericalFact;
     private TextFactory textFactory;
     private FormulaFactory formulaFactory;
+    private SpreadsheetFactory factory;
     private static final Pattern COORDINATE_PATTERN = Pattern.compile("^([a-zA-Z]+)(\\d+)$");
     private PostFixGenerator generator;
+    private Map<Cell, Set<Cell>> dependenciesMap;
 
     SpreadsheetController(UserInterface ui){
         this.loader = new Loader(this);
@@ -34,7 +41,10 @@ public class SpreadsheetController {
         this.numericalFact = new NumericalFactory();
         this.textFactory = new TextFactory();
         this.formulaFactory = new FormulaFactory();
+        this.factory = factory; 
         this.generator = new PostFixGenerator();
+        this.dependenciesMap = new HashMap<Cell, Set<Cell>>();
+        
         
     }
 
@@ -124,8 +134,8 @@ public class SpreadsheetController {
 
         //gestionar coordinate 
         cellCoord = cellCoord.toUpperCase();
+        //PROCESSAR FORMULA
         if(strContent.startsWith("=")){
-            //PROCESSAR FORMULA
             String strContent2 = strContent.substring(1);//witout =
             tokenizer.addsTokenizer(tokenizer);
             tokenizer.tokenize(strContent2);
@@ -149,23 +159,50 @@ public class SpreadsheetController {
             }
             double res = FormulaEvaluator.getResult(components, spreadSheet, functionArgs, ranges);
             //pasar el double a content
-            Formula formula = new Formula();
+            Formula formula = new Formula(strContent2,components, res);
             formula.setResult(new MyNumber(res));
             content = formula;
             value = new MyNumber(res);
-
+        
+        //PROCESSAR NUMERO
         }else if(isNumeric(strContent)){
             content = numericalFact.createContent();
             value = new MyNumber(Double.parseDouble(strContent));
+
+        //PROCESSAR TEXT
         }else{
             content = textFactory.createContent();
             value = new MyString(strContent);
         }
+        //DEPENDENCIES
         if(content != null && value != null){
             content.setContent(value);
             this.spreadSheet.setCellContent(cellCoord, content);
             content.setContent(value);
         }
+        Content oldContent;
+        Cell cell = new Cell(content,cellCoord);
+        if (cell == null) {
+            oldContent = null;
+        } else {
+            oldContent = cell.getCellContent();
+        }
+        Set<Cell> oldDependencies = null, newDependencies = null;
+        if (oldContent instanceof Formula) {
+            oldDependencies = getDependenciesOfFormula((Formula) oldContent);
+        }
+        if (content instanceof Formula) {
+            newDependencies = getDependenciesOfFormula((Formula) content);
+        }
+
+        Set<Cell> toRemove, toAdd;
+        toRemove = updateDependencies(oldDependencies, newDependencies);
+        toAdd = updateDependencies(newDependencies, oldDependencies);
+
+        removeDependencies(toRemove, cell);
+        addDependencies(toAdd, cell);
+
+        UpdateSpreadsheet(cellCoord);
     }
 
 
@@ -248,5 +285,143 @@ public class SpreadsheetController {
         }
         int row = coord[1];
         return letters.concat(Integer.toString(row));
+    }
+
+    public void UpdateSpreadsheet(String cellCoord) throws ContentException, BadCoordinateException, NoNumberException, ParserException{
+        int[] coord = FromCellToCoord(cellCoord);
+
+        Set<Cell> toUpdate = this.dependenciesMap.get(coord);
+        if (toUpdate == null) {
+            return;
+        }
+        for (Cell c : toUpdate) {
+            Content updatedContent = this.UpdateFormula(c);
+            c.setCellContent(updatedContent);
+            UpdateSpreadsheet(c.getCellName());
+        }
+    }
+    
+    public Set<Cell> updateDependencies(Set<Cell> left, Set<Cell> right) {
+        if (left == null || left.isEmpty()) {
+            return null;
+        }
+        if (right == null || right.isEmpty()) {
+            return left;
+        }
+
+        Set<Cell> difLeft = new HashSet<>();
+        for (Cell idx : left) {
+            if (!right.contains(idx)) {
+                difLeft.add(idx);
+            }
+        }
+        return difLeft;
+    }
+    public void addDependencies(Set<Cell> toAdd, Cell index) {
+        if (toAdd == null) {
+            return;
+        }
+        for (Cell idx : toAdd) {
+            if (this.dependenciesMap.containsKey(idx)) {
+                this.dependenciesMap.get(idx).add(index);
+            } else {
+                Set<Cell> dps = new HashSet<>();
+                dps.add(index);
+                this.dependenciesMap.put(idx, dps);
+                //set a la cell
+            }
+        }
+    }
+    public void removeDependencies(Set<Cell> toRemove, Cell index) {
+        if (toRemove == null) {
+            return;
+        }
+        for (Cell idx : toRemove) {
+            if (this.dependenciesMap.containsKey(idx)) {
+                this.dependenciesMap.get(idx).remove(index);
+                //get a cell i remove
+            }
+        }
+    }
+
+    private Formula processFormula(Cell coord, String strContent) throws ContentException, BadCoordinateException, ParserException {
+        String formulaText = strContent.substring(1);
+        Stack<Integer> functionArgs;
+        int ranges = 0;
+        try {
+            tokenizer.tokenize(formulaText);
+            List<Token> tokens = tokenizer.getTokens();
+            List<Token> postfix = generator.infixToPostfix(tokens);
+            for(Token tok : tokens){
+                if(tok.type == TokenEnum.RANGE){
+                    ranges ++;
+                }
+            }
+            functionArgs = generator.getFunctionArguments();
+            List<ComponentFormula> components = ComponentsFormulaFactory.generateFormulaComponentList(postfix, spreadSheet);
+            Double formulaResult = FormulaEvaluator.getResult(components, spreadSheet,functionArgs, ranges);
+            Formula formula = factory.createFormula(formulaText, components, formulaResult);
+            this.checkCircularDependencies(coord, formula);
+            return formula;
+
+        } catch (NoNumberException ex) {
+            throw new ContentException(ex.getMessage());
+        }
+    }
+
+    public Formula UpdateFormula(Cell coord) throws ContentException, BadCoordinateException, NoNumberException, ParserException {
+        Stack<Integer> functionArgs;
+        int ranges = 0;
+        Content content = coord.getCellContent();
+        String formulaText = coord.getAsString();
+        tokenizer.tokenize(formulaText);
+        List<Token> tokens = tokenizer.getTokens();
+        List<Token> postfix = generator.infixToPostfix(tokens);
+        List<ComponentFormula> components = ComponentsFormulaFactory.generateFormulaComponentList(postfix, spreadSheet);
+        for(Token tok : tokens){
+            if(tok.type == TokenEnum.RANGE){
+                ranges ++;
+            }
+        }
+        functionArgs = generator.getFunctionArguments();
+        Double formulaResult = FormulaEvaluator.getResult(components, spreadSheet,functionArgs,ranges);
+        Formula formula = factory.createFormula(formulaText, components, formulaResult);
+        this.checkCircularDependencies(coord, formula);
+        return formula;
+    }
+
+    public void checkCircularDependencies(Cell coord, Formula formula) throws ContentException {
+        Set<Cell> dependencies = getRecurrentDependenciesOfFormula(formula);
+        if (dependencies.contains(coord)) {
+            throw new ContentException("Content has circular dependencies");
+        }
+    }
+
+    public Set<Cell> getRecurrentDependenciesOfFormula(Formula formula) {
+        Set<Cell> dependencies = new HashSet();
+        Set<Cell> directDependencies = getDependenciesOfFormula(formula);
+        dependencies.addAll(directDependencies);
+
+        for (Cell coord : directDependencies) {
+            Content component = coord.getCellContent();
+            if (component instanceof Formula) {
+                dependencies.addAll(getRecurrentDependenciesOfFormula((Formula) component));
+            }
+        }
+        return dependencies;
+    }
+
+    public Set<Cell> getDependenciesOfFormula(Formula formula) {
+        Set<Cell> dependencies = new HashSet<>();
+        for (ComponentFormula component : formula.getFormulaComponents()) {
+            if (component instanceof Cell) {
+                Cell cell = (Cell) component;
+                //String coord = cell.getCellName();
+                if (!dependencies.contains(cell)) {
+                    dependencies.add(cell);
+                }
+            }
+        }
+        return dependencies;
     }
 }
