@@ -7,20 +7,24 @@ public class ComponentsFormulaFactory {
 
     public static List<ComponentFormula> generateFormulaComponentList(List<Token> tokens, Spreadsheet spreadsheet) throws BadCoordinateException, ContentException {
         List<ComponentFormula> components = new ArrayList<ComponentFormula>(tokens.size());
-
+        
         for (Token token : tokens) {
             ComponentFormula component = null;
             switch (token.type) {
-                case COORDINATE:
-                    Coordinate coord = new Coordinate(token.sequence);
-                    component = Coordinate.coord2String(coord);
+                case CELL:
+                    Cell cell = spreadsheet.getCells().get(token.sequence);
+                    component = (ComponentFormula) cell;
                     //component = SpreadsheetControler.getCellContentAsString(coord);
                     break;
                 case NUMBER:
                     component = new MyNumber(Double.parseDouble(token.sequence));
                     break;
                 case RANGE:
-                    components.addAll(new Range(token.sequence).getCells());
+                    Range range = new Range(token.sequence);
+                    ArrayList<Cell> cells = range.getCells(spreadsheet);
+                    for(Cell aux : cells){
+                        components.add(aux);
+                    }
                     break;
                 case OPERATOR:
                     component = OperatorFactory.getInstance(token.sequence);
