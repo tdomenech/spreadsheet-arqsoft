@@ -31,7 +31,6 @@ public class SpreadsheetController {
     private SpreadsheetFactory factory;
     private static final Pattern COORDINATE_PATTERN = Pattern.compile("^([a-zA-Z]+)(\\d+)$");
     private PostFixGenerator generator;
-    private Map<Cell, Set<Cell>> dependenciesMap;
 
     SpreadsheetController(UserInterface ui){
         this.loader = new Loader(this);
@@ -43,7 +42,6 @@ public class SpreadsheetController {
         this.formulaFactory = new FormulaFactory();
         this.factory = factory; 
         this.generator = new PostFixGenerator();
-        this.dependenciesMap = new HashMap<Cell, Set<Cell>>();
         
         
     }
@@ -52,7 +50,7 @@ public class SpreadsheetController {
         return this.spreadSheet;
     }
     public void createSpreadsheet(int id){
-        spreadSheet = new Spreadsheet(id);
+        this.spreadSheet = new Spreadsheet(id);
         //this.ui.println("Created Spreadsheet with id "+ id);
     }
 
@@ -181,27 +179,23 @@ public class SpreadsheetController {
             content.setContent(value);
         }
         Content oldContent;
-        Cell cell = new Cell(content,cellCoord);
+        Cell cell = this.spreadSheet.getCells().get(cellCoord);
         if (cell == null) {
             oldContent = null;
         } else {
             oldContent = cell.getCellContent();
         }
-        Set<Cell> oldDependencies = null, newDependencies = null;
+        HashSet<Cell> oldDependencies = null, newDependencies = null;
         if (oldContent instanceof Formula) {
-            oldDependencies = getDependenciesOfFormula((Formula) oldContent);
+            oldDependencies = cell.getIDependOn();
         }
         if (content instanceof Formula) {
             newDependencies = getDependenciesOfFormula((Formula) content);
+            for(Cell depenancy : newDependencies){
+                this.spreadSheet.cells.get(depenancy.getCellName()).setDependOnMe(cell);
+            }
+            cell.setIDependOn(newDependencies);
         }
-
-        Set<Cell> toRemove, toAdd;
-        toRemove = updateDependencies(oldDependencies, newDependencies);
-        toAdd = updateDependencies(newDependencies, oldDependencies);
-
-        removeDependencies(toRemove, cell);
-        addDependencies(toAdd, cell);
-
         UpdateSpreadsheet(cellCoord);
     }
 
@@ -289,18 +283,18 @@ public class SpreadsheetController {
 
     public void UpdateSpreadsheet(String cellCoord) throws ContentException, BadCoordinateException, NoNumberException, ParserException{
         int[] coord = FromCellToCoord(cellCoord);
-
-        Set<Cell> toUpdate = this.dependenciesMap.get(coord);
-        if (toUpdate == null) {
-            return;
-        }
-        for (Cell c : toUpdate) {
-            Content updatedContent = this.UpdateFormula(c);
-            c.setCellContent(updatedContent);
+        for (Cell c : spreadSheet.cells.get(cellCoord).getDependOnMe()) {
+            if(c.getCellContent() instanceof Formula){
+                Formula updatedContent = this.UpdateFormula(c);
+                Value value = updatedContent.getResult();
+                updatedContent.setContent(value);
+                c.setCellContent(updatedContent);
+            }
             UpdateSpreadsheet(c.getCellName());
         }
     }
     
+    /*
     public Set<Cell> updateDependencies(Set<Cell> left, Set<Cell> right) {
         if (left == null || left.isEmpty()) {
             return null;
@@ -317,6 +311,7 @@ public class SpreadsheetController {
         }
         return difLeft;
     }
+    
     public void addDependencies(Set<Cell> toAdd, Cell index) {
         if (toAdd == null) {
             return;
@@ -342,7 +337,7 @@ public class SpreadsheetController {
                 //get a cell i remove
             }
         }
-    }
+    } */
 
     private Formula processFormula(Cell coord, String strContent) throws ContentException, BadCoordinateException, ParserException {
         String formulaText = strContent.substring(1);
@@ -360,7 +355,7 @@ public class SpreadsheetController {
             functionArgs = generator.getFunctionArguments();
             List<ComponentFormula> components = ComponentsFormulaFactory.generateFormulaComponentList(postfix, spreadSheet);
             Double formulaResult = FormulaEvaluator.getResult(components, spreadSheet,functionArgs, ranges);
-            Formula formula = factory.createFormula(formulaText, components, formulaResult);
+            Formula formula = new Formula(formulaText, components, formulaResult);
             this.checkCircularDependencies(coord, formula);
             return formula;
 
@@ -372,8 +367,8 @@ public class SpreadsheetController {
     public Formula UpdateFormula(Cell coord) throws ContentException, BadCoordinateException, NoNumberException, ParserException {
         Stack<Integer> functionArgs;
         int ranges = 0;
-        Content content = coord.getCellContent();
-        String formulaText = coord.getAsString();
+        Formula content = (Formula) coord.getCellContent();
+        String formulaText = content.getExpression();
         tokenizer.tokenize(formulaText);
         List<Token> tokens = tokenizer.getTokens();
         List<Token> postfix = generator.infixToPostfix(tokens);
@@ -384,8 +379,8 @@ public class SpreadsheetController {
             }
         }
         functionArgs = generator.getFunctionArguments();
-        Double formulaResult = FormulaEvaluator.getResult(components, spreadSheet,functionArgs,ranges);
-        Formula formula = factory.createFormula(formulaText, components, formulaResult);
+        Double formulaResult = FormulaEvaluator.getResult(components, this.spreadSheet,functionArgs,ranges);
+        Formula formula = new Formula(formulaText, components, formulaResult);
         this.checkCircularDependencies(coord, formula);
         return formula;
     }
@@ -411,8 +406,8 @@ public class SpreadsheetController {
         return dependencies;
     }
 
-    public Set<Cell> getDependenciesOfFormula(Formula formula) {
-        Set<Cell> dependencies = new HashSet<>();
+    public HashSet<Cell> getDependenciesOfFormula(Formula formula) {
+        HashSet<Cell> dependencies = new HashSet<>();
         for (ComponentFormula component : formula.getFormulaComponents()) {
             if (component instanceof Cell) {
                 Cell cell = (Cell) component;

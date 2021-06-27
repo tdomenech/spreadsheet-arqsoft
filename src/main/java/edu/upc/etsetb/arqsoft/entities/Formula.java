@@ -10,9 +10,12 @@ public class Formula extends Content{
     public Formula(String text, List<ComponentFormula> formulaComponentList, Double result){
         this.text = text;
         this.formulaComponentList = formulaComponentList;
-        this.result = new MyNumber(0.0);
+        this.result = new MyNumber(result);
     }
 
+    public String getExpression(){
+        return this.text;
+    }
     public MyNumber getResult(){
         return this.result;
     }

@@ -38,12 +38,12 @@ public class Cell implements Operand, Argument {
         return dependOnMe;
     }
 
-    public void setIDependOn(HashSet<Cell> cells){
-        this.iDependOn = cells;
+    public void setDependOnMe(Cell cell){
+        this.dependOnMe.add(cell);
     }
 
-    public void setDependOnMe(HashSet<Cell> cells){
-        this.dependOnMe = cells;
+    public void setIDependOn(HashSet<Cell> cells){
+        this.iDependOn = cells;
     }
 
 
